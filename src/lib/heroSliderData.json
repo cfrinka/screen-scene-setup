@@ -1,0 +1,20 @@
+[
+  {
+    "image": "../assets/banners/peterpan.png",
+    "title": "PETER PAN",
+    "subtitle": "O MUSICAL",
+    "description": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy."
+  },
+  {
+    "image": "../assets/banners/mahogony.png",
+    "title": "MAHOGONY",
+    "subtitle": "A HISTÓRIA",
+    "description": "Another dummy text for Mahogony. This is a placeholder for the second slide."
+  },
+  {
+    "image": "../assets/banners/cao.png",
+    "title": "CÃO",
+    "subtitle": "O ESPETÁCULO",
+    "description": "Third dummy text for Cão. This is a placeholder for the third slide."
+  }
+]

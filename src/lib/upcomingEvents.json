@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "date": "12/05",
+    "title": "Próximo Evento 1",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=800&fit=crop",
+    "description": "Descrição detalhada do Evento 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum vestibulum."
+  },
+  {
+    "id": 2,
+    "date": "18/05",
+    "title": "Próximo Evento 2",
+    "image": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&h=800&fit=crop",
+    "description": "Descrição detalhada do Evento 2. Cras suscipit, quam vitae dapibus facilisis, urna sapien pretium libero, ac hendrerit enim dolor ac erat."
+  },
+  {
+    "id": 3,
+    "date": "25/05",
+    "title": "Próximo Evento 3",
+    "image": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=800&fit=crop",
+    "description": "Descrição detalhada do Evento 3. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+  }
+]
