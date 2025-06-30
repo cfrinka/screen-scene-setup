@@ -67,3 +67,15 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## Deploying on Easypanel with Nixpacks
+
+This project is compatible with [Easypanel](https://easypanel.io/) and [Nixpacks](https://nixpacks.com/).
+
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
+- **Node.js version:** 18 or higher
+
+No extra configuration is needed. Nixpacks will detect the Vite setup and build the project into the `dist` directory, which will be served as static files.
+
+If you use a custom domain or need to set environment variables, configure them in the Easypanel dashboard as needed.
