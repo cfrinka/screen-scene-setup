@@ -25,7 +25,7 @@ const Historia = () => (
       </div>
       <div className="flex flex-col md:flex-row-reverse items-center gap-6">
         <img
-          src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd8?auto=format&fit=crop&w=600&q=80"
+          src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80"
           alt="Projeto Mahogony"
           className="w-full md:w-1/3 rounded-lg shadow"
         />
