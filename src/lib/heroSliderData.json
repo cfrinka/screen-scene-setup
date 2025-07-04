@@ -1,5 +1,11 @@
 [
   {
+    "image": "../assets/banners/cta-gorki.png",
+    "title": "Inscreva-se nos Cursos Gorki!",
+    "subtitle": "Teatro, Musical e Infantil",
+    "description": "Garanta sua vaga nos cursos de teatro, musical e infantil do Gorki! Desenvolva seu talento, faça novas amizades e viva experiências inesquecíveis. Clique e inscreva-se agora mesmo!"
+  },
+  {
     "image": "../assets/banners/peterpan.png",
     "title": "PETER PAN",
     "subtitle": "O MUSICAL",

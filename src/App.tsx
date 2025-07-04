@@ -11,6 +11,7 @@ import SobreNos from "./pages/SobreNos";
 import GestaoDeCultura from "./pages/GestaoDeCultura";
 import Historia from "./pages/Historia";
 import Layout from "./components/Layout";
+import EnrollmentPage from "./pages/EnrollmentPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/sobre-nos" element={<SobreNos />} />
             <Route path="/gestao-de-cultura" element={<GestaoDeCultura />} />
             <Route path="/historia" element={<Historia />} />
+            <Route path="/inscricao" element={<EnrollmentPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

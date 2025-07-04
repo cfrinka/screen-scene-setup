@@ -33,10 +33,10 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 w-full bg-black/90 backdrop-blur-3xl z-50 y-2">
-      <div className="container flex flex-col items-center justify-center">
+    <header className="fixed top-0 w-full bg-black/90 backdrop-blur-3xl z-50 y-2 py-4">
+      <div className="container flex gap-10 items-center justify-center">
         <div>
-          <img src={logobranco} alt="logo" className="h-24 mt-4" />
+          <img src={logobranco} alt="logo" className="h-16 mt-4" />
         </div>
         <div className="flex items-center justify-center h-16">
           <div className="flex items-center space-x-8">
