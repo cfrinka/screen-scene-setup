@@ -2,8 +2,6 @@ import Hero from "../components/Hero";
 import UpcomingEvents from "../components/UpcomingEvents";
 import ImageSection from "../components/ImageSection";
 import Gallery from "../components/Gallery";
-import Mosaic from "../components/Mosaic";
-import mosaicImages from "../lib/mosaicImages.json";
 import { motion } from "framer-motion";
 
 const Index = () => {
@@ -18,9 +16,6 @@ const Index = () => {
       <UpcomingEvents />
       <ImageSection />
       <Gallery />
-      <div className="mt-12">
-        <Mosaic images={mosaicImages} />
-      </div>
     </motion.div>
   );
 };
