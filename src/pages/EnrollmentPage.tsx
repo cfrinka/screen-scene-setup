@@ -65,7 +65,7 @@ const EnrollmentPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center pt-20 px-2 bg-white">
+    <div className="min-h-screen w-full flex flex-col items-center pt-10 px-2 bg-white">
       <h1 className="text-3xl md:text-5xl font-black mb-8 md:mb-16 text-black tracking-tight">
         Inscrição
       </h1>

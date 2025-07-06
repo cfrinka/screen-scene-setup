@@ -40,3 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #ffffff00;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}

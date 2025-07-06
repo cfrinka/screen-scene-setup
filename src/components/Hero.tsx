@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   type CarouselApi,
 } from "./ui/carousel";
+import { useSiteDataContext } from "@/context/SiteDataContext";
 
 interface SlideData {
   image: string;
@@ -13,104 +14,78 @@ interface SlideData {
   description: string;
 }
 
-const images = import.meta.glob("../assets/banners/*", {
-  eager: true,
-  import: "default",
-});
-
 const Hero = () => {
-  const [slides, setSlides] = useState<SlideData[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const carouselApiRef = useRef<CarouselApi | null>(null);
+  const { siteData, loading } = useSiteDataContext();
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    import("../lib/heroSliderData.json").then((data) => {
-      const slidesData = (data.default || data).map((slide: SlideData) => ({
-        ...slide,
-        image: images[
-          slide.image.replace("../assets/banners/", "../assets/banners/")
-        ] as string,
-      }));
-      setSlides(slidesData);
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
     });
-  }, []);
+  }, [api]);
 
-  // Autoplay effect
-  useEffect(() => {
-    if (!carouselApiRef.current) return;
-    const interval = setInterval(() => {
-      carouselApiRef.current?.scrollNext();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [slides]);
-
-  const handleDotClick = (idx: number) => {
-    carouselApiRef.current?.scrollTo(idx);
-  };
-
-  return (
-    <section className="relative min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-black to-white pb-3">
-      <div className="relative z-10 w-full max-w-none mx-auto px-0 group">
-        <Carousel
-          opts={{ loop: true }}
-          className="w-full"
-          setApi={(api) => {
-            carouselApiRef.current = api;
-            api?.on("select", () => setActiveIndex(api.selectedScrollSnap()));
-          }}
-        >
-          <CarouselContent>
-            {slides.map((slide, idx) => (
-              <CarouselItem key={idx}>
-                <div
-                  className="relative flex flex-col items-center justify-center min-h-screen text-center text-white px-4"
-                  style={{
-                    backgroundImage: `url(${slide.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    boxShadow: "inset 0 0 0 1000px rgba(0,0,0,0.4)",
-                  }}
-                >
-                  <div className="mb-8">
-                    <h1 className="text-6xl md:text-8xl font-serif text-yellow-400 mb-4 animate-fade-in">
-                      {slide.title}
-                    </h1>
-                    <p className="text-2xl md:text-3xl font-light mb-8 tracking-wide">
-                      {slide.subtitle}
-                    </p>
-                  </div>
-                  <div className="max-w-4xl mx-auto mb-12">
-                    <div className="bg-black/60 backdrop-blur-sm rounded-lg p-8 border border-gray-700">
-                      <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                        {slide.title}
-                      </h2>
-                      <p className="text-lg text-gray-300 leading-relaxed">
-                        {slide.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-        </Carousel>
-        <div className="flex justify-center space-x-2 mt-6">
-          {slides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleDotClick(idx)}
-              className={`w-3 h-3 rounded-full focus:outline-none border-2 border-transparent ${
-                idx === activeIndex
-                  ? "bg-yellow-400 border-yellow-400"
-                  : "bg-gray-600"
-              } transition-colors duration-200`}
-              aria-label={`Go to slide ${idx + 1}`}
-            ></button>
-          ))}
+  if (loading) {
+    return (
+      <div className="w-full h-[600px] bg-gray-200 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
         </div>
       </div>
-    </section>
+    );
+  }
+
+  const bannerData = siteData?.home?.banner || [];
+
+  return (
+    <div className="w-full mb-4">
+      <Carousel setApi={setApi} className="w-full">
+        <CarouselContent>
+          {bannerData.map((item, index) => (
+            <CarouselItem key={index}>
+              <div className="relative h-[600px]">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                      {item.title}
+                    </h1>
+                    <p className="text-xl md:text-2xl mb-4">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: count }).map((_, index) => (
+          <button
+            key={index}
+            className={`w-3 h-3 mx-1 rounded-full ${
+              current === index + 1 ? "bg-yellow-500" : "bg-gray-300"
+            }`}
+            onClick={() => api?.scrollTo(index)}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
