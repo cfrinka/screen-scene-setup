@@ -59,3 +59,22 @@
 .custom-scrollbar::-webkit-scrollbar-button {
   display: none;
 }
+
+[data-vaul-drawer][data-vaul-drawer-direction="bottom"]::after,
+[data-vaul-drawer]:not([data-vaul-custom-container="true"])::after,
+.vaul-drawer-content::after {
+  all: unset !important;
+  content: none !important;
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  position: static !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import FileUpload from "../components/FileUpload";
 import { useSiteData } from "@/hooks/useSiteData";
 import { useToast } from "@/hooks/use-toast";
+import { DatePicker } from "@/components/ui/date-picker";
 
 type BannerItem = {
   title: string;
@@ -60,6 +61,7 @@ type SiteData = {
   catalog: Catalog[];
   aboutUs: AboutUs[];
   history: History[];
+  gallery: { src: string; alt: string }[];
 };
 
 const defaultSiteData: SiteData = {
@@ -72,6 +74,7 @@ const defaultSiteData: SiteData = {
   catalog: [],
   aboutUs: [],
   history: [],
+  gallery: [],
 };
 
 export default function AdminPage() {
@@ -96,6 +99,7 @@ export default function AdminPage() {
         catalog: firebaseSiteData.catalog || [],
         aboutUs: firebaseSiteData.aboutUs || [],
         history: firebaseSiteData.history || [],
+        gallery: firebaseSiteData.gallery || [],
       };
       setSiteData(safeSiteData);
     }
@@ -170,6 +174,32 @@ export default function AdminPage() {
     setSiteData((prev) => ({
       ...prev,
       catalog: (prev.catalog || []).filter((_, i) => i !== idx),
+    }));
+  };
+
+  // --- Gallery ---
+  const handleGalleryChange = (
+    idx: number,
+    field: keyof { src: string; alt: string },
+    value: string
+  ) => {
+    setSiteData((prev) => {
+      const gallery = (prev.gallery || []).map((g, i) =>
+        i === idx ? { ...g, [field]: value } : g
+      );
+      return { ...prev, gallery };
+    });
+  };
+  const addGallery = () => {
+    setSiteData((prev) => ({
+      ...prev,
+      gallery: [...(prev.gallery || []), { src: "", alt: "" }],
+    }));
+  };
+  const removeGallery = (idx: number) => {
+    setSiteData((prev) => ({
+      ...prev,
+      gallery: (prev.gallery || []).filter((_, i) => i !== idx),
     }));
   };
 
@@ -261,21 +291,10 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Administração de Dados do Site
-      </h1>
-      {/* Save Button */}
-      <div className="flex gap-4 mb-6">
-        <button
-          className="px-6 py-2 bg-green-600 text-white rounded text-lg hover:bg-green-700"
-          onClick={handleSiteUpdate}
-        >
-          Salvar
-        </button>
-      </div>
+      <h1 className="text-3xl font-bold mb-6">Configurações do Site</h1>
       {/* Home Section */}
       <section className="border rounded p-4">
-        <h2 className="text-xl font-semibold mb-2">Início</h2>
+        <h2 className="text-xl font-semibold mb-2">Home</h2>
         <div className="mb-2">
           <label className="block font-medium">Imagem de Decoração</label>
           <FileUpload
@@ -379,92 +398,103 @@ export default function AdminPage() {
         </div>
         <div>
           <h3 className="font-semibold mb-1">Próximos Eventos</h3>
-          {(siteData.home?.nextEvents || []).map((item, idx) => (
-            <div
-              key={idx}
-              className="border rounded pt-10 p-2 mb-2 bg-gray-50 relative"
-            >
-              <button
-                className="absolute top-2 right-2 mb-2 text-white bg-red-500 hover:bg-red-700 rounded-full w-6 h-6 flex items-center justify-center shadow"
-                title="Remover evento"
-                onClick={() =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).filter(
-                      (_, i) => i !== idx
-                    )
-                  )
-                }
+          {(siteData.home?.nextEvents || [])
+            .slice()
+            .sort((a, b) => {
+              const parse = (str: string) => {
+                const [d, m, y] = (str || "").split("-").map(Number);
+                return new Date(y, m - 1, d);
+              };
+              const dateA = parse(a.date);
+              const dateB = parse(b.date);
+              return dateA.getTime() - dateB.getTime();
+            })
+            .map((item, idx) => (
+              <div
+                key={idx}
+                className="border rounded pt-10 p-2 mb-2 bg-gray-50 relative"
               >
-                <span className="text-lg font-bold">&times;</span>
-              </button>
-              <input
-                className="border p-1 w-full mb-1"
-                placeholder="Título"
-                value={item?.title || ""}
-                onChange={(e) =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).map((ev, i) =>
-                      i === idx ? { ...ev, title: e.target.value } : ev
+                <button
+                  className="absolute top-2 right-2 mb-2 text-white bg-red-500 hover:bg-red-700 rounded-full w-6 h-6 flex items-center justify-center shadow"
+                  title="Remover evento"
+                  onClick={() =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).filter(
+                        (_, i) => i !== idx
+                      )
                     )
-                  )
-                }
-              />
-              <input
-                className="border p-1 w-full mb-1"
-                placeholder="Descrição"
-                value={item?.description || ""}
-                onChange={(e) =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).map((ev, i) =>
-                      i === idx ? { ...ev, description: e.target.value } : ev
+                  }
+                >
+                  <span className="text-lg font-bold">&times;</span>
+                </button>
+                <input
+                  className="border p-1 w-full mb-1"
+                  placeholder="Título"
+                  value={item?.title || ""}
+                  onChange={(e) =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).map((ev, i) =>
+                        i === idx ? { ...ev, title: e.target.value } : ev
+                      )
                     )
-                  )
-                }
-              />
-              <input
-                className="border p-1 w-full mb-1"
-                placeholder="Data"
-                value={item?.date || ""}
-                onChange={(e) =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).map((ev, i) =>
-                      i === idx ? { ...ev, date: e.target.value } : ev
+                  }
+                />
+                <input
+                  className="border p-1 w-full mb-1"
+                  placeholder="Descrição"
+                  value={item?.description || ""}
+                  onChange={(e) =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).map((ev, i) =>
+                        i === idx ? { ...ev, description: e.target.value } : ev
+                      )
                     )
-                  )
-                }
-              />
-              <input
-                className="border p-1 w-full mb-1"
-                placeholder="Local"
-                value={item?.location || ""}
-                onChange={(e) =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).map((ev, i) =>
-                      i === idx ? { ...ev, location: e.target.value } : ev
+                  }
+                />
+                <DatePicker
+                  value={item?.date || ""}
+                  onChange={(date) =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).map((ev, i) =>
+                        i === idx ? { ...ev, date: date } : ev
+                      )
                     )
-                  )
-                }
-              />
-              <FileUpload
-                value={item?.image || ""}
-                onChange={(url) =>
-                  handleHomeChange(
-                    "nextEvents",
-                    (siteData.home?.nextEvents || []).map((ev, i) =>
-                      i === idx ? { ...ev, image: url } : ev
+                  }
+                  placeholder="Selecione a data do evento"
+                  className="mb-1"
+                />
+                <input
+                  className="border p-1 w-full mb-1"
+                  placeholder="Local"
+                  value={item?.location || ""}
+                  onChange={(e) =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).map((ev, i) =>
+                        i === idx ? { ...ev, location: e.target.value } : ev
+                      )
                     )
-                  )
-                }
-                folder="nextEvents"
-                fileName={`event-${idx}`}
-              />
-            </div>
-          ))}
+                  }
+                />
+                <FileUpload
+                  value={item?.image || ""}
+                  onChange={(url) =>
+                    handleHomeChange(
+                      "nextEvents",
+                      (siteData.home?.nextEvents || []).map((ev, i) =>
+                        i === idx ? { ...ev, image: url } : ev
+                      )
+                    )
+                  }
+                  folder="nextEvents"
+                  fileName={`event-${idx}`}
+                />
+              </div>
+            ))}
           <button
             className="mt-2 px-2 py-1 bg-green-600 text-white rounded"
             onClick={() =>
@@ -582,6 +612,66 @@ export default function AdminPage() {
           Adicionar Item ao Catálogo
         </button>
       </section>
+      {/* Gallery Section */}
+      <section className="border rounded p-4">
+        <h2 className="text-xl font-semibold mb-2">Galeria de Fotos</h2>
+        {(siteData.gallery || []).map((item, idx) => (
+          <div
+            key={idx}
+            className="border rounded pt-10 p-2 mb-2 bg-gray-50 relative"
+          >
+            <button
+              className="absolute top-2 right-2 mb-2 text-white bg-red-500 hover:bg-red-700 rounded-full w-6 h-6 flex items-center justify-center shadow"
+              title="Remover foto da galeria"
+              onClick={() =>
+                setSiteData((prev) => ({
+                  ...prev,
+                  gallery: (prev.gallery || []).filter((_, i) => i !== idx),
+                }))
+              }
+            >
+              <span className="text-lg font-bold">&times;</span>
+            </button>
+            <FileUpload
+              value={item?.src || ""}
+              onChange={(url) =>
+                setSiteData((prev) => ({
+                  ...prev,
+                  gallery: (prev.gallery || []).map((img, i) =>
+                    i === idx ? { ...img, src: url } : img
+                  ),
+                }))
+              }
+              folder="gallery"
+              fileName={`gallery-${idx}`}
+            />
+            <input
+              className="border p-1 w-full mb-1"
+              placeholder="Descrição (alt)"
+              value={item?.alt || ""}
+              onChange={(e) =>
+                setSiteData((prev) => ({
+                  ...prev,
+                  gallery: (prev.gallery || []).map((img, i) =>
+                    i === idx ? { ...img, alt: e.target.value } : img
+                  ),
+                }))
+              }
+            />
+          </div>
+        ))}
+        <button
+          className="mt-2 px-2 py-1 bg-green-600 text-white rounded"
+          onClick={() =>
+            setSiteData((prev) => ({
+              ...prev,
+              gallery: [...(prev.gallery || []), { src: "", alt: "" }],
+            }))
+          }
+        >
+          Adicionar Foto à Galeria
+        </button>
+      </section>
       {/* About Us Section */}
       <section className="border rounded p-4">
         <h2 className="text-xl font-semibold mb-2">Sobre Nós</h2>
@@ -678,6 +768,16 @@ export default function AdminPage() {
           Adicionar Item à História
         </button>
       </section>
+      {/* Save Button */}
+      <div className="flex items-center justify-end w-full">
+        <div
+          className="px-6 py-3 bg-yellow-500 text-black rounded-2xl text-lg text-center font-bold shadow-lg hover:bg-yellow-600 transition-colors border-2"
+          style={{ minWidth: "120px" }}
+          onClick={handleSiteUpdate}
+        >
+          Salvar
+        </div>
+      </div>
     </div>
   );
 }

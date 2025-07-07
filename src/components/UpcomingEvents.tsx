@@ -127,8 +127,8 @@ const UpcomingEvents = () => {
                         </button>
                       </DrawerTrigger>
                       <DrawerContent className="max-w-lg ml-auto h-full fixed right-0 top-0 rounded-none rounded-l-2xl shadow-2xl p-0 overflow-y-auto">
-                        <DrawerClose className="absolute top-4 right-4 z-10 bg-gray-200 rounded-full p-2 hover:bg-gray-300 transition-colors">
-                          <span className="text-xl">&times;</span>
+                        <DrawerClose className="absolute top-4 right-4 z-10 text-black rounded-full p-2 transition-colors">
+                          <span className="text-3xl">&times;</span>
                         </DrawerClose>
                         <Checkout />
                       </DrawerContent>

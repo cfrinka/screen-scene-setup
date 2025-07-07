@@ -48,7 +48,13 @@ const Header = () => {
     <header className="fixed top-0 w-full bg-black/90 backdrop-blur-3xl z-50 y-2 py-4">
       <div className="container flex gap-10 items-center justify-between">
         <div>
-          <img src={logobranco} alt="logo" className="h-16 mt-4" />
+          <Link to="/">
+            <img
+              src={logobranco}
+              alt="logo"
+              className="h-16 mt-4 cursor-pointer"
+            />
+          </Link>
         </div>
         <div className="flex items-center justify-center h-16">
           <div className="flex items-center space-x-8">
@@ -86,8 +92,8 @@ const Header = () => {
             <DrawerContent
               className={`max-w-xs w-full h-full fixed right-0 top-0 rounded-2xl shadow-2xl p-0 bg-black flex flex-col pt-24 z-50`}
             >
-              <DrawerClose className="absolute top-4 right-4 z-10 text-gray-200 rounded-full p-2 hover:text-gray-300 transition-colors">
-                <span className="text-2xl">&times;</span>
+              <DrawerClose className="absolute top-4 right-4 z-10 text-black rounded-full p-2 transition-colors">
+                <span className="text-3xl">&times;</span>
               </DrawerClose>
               <nav className="flex flex-col space-y-6 w-full items-center">
                 {navItems.map((item) => {
