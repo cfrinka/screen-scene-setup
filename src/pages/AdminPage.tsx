@@ -400,18 +400,22 @@ export default function AdminPage() {
           <h3 className="font-semibold mb-1">Próximos Eventos</h3>
           {(siteData.home?.nextEvents || [])
             .slice()
+            .map((item, originalIdx) => ({ item, originalIdx }))
             .sort((a, b) => {
               const parse = (str: string) => {
-                const [d, m, y] = (str || "").split("-").map(Number);
+                if (!str || str.trim() === "") return new Date(9999, 11, 31); // Put empty dates at the end
+                const [d, m, y] = str.split("-").map(Number);
+                if (isNaN(d) || isNaN(m) || isNaN(y))
+                  return new Date(9999, 11, 31); // Invalid dates at the end
                 return new Date(y, m - 1, d);
               };
-              const dateA = parse(a.date);
-              const dateB = parse(b.date);
+              const dateA = parse(a.item.date);
+              const dateB = parse(b.item.date);
               return dateA.getTime() - dateB.getTime();
             })
-            .map((item, idx) => (
+            .map(({ item, originalIdx }) => (
               <div
-                key={idx}
+                key={originalIdx}
                 className="border rounded pt-10 p-2 mb-2 bg-gray-50 relative"
               >
                 <button
@@ -421,7 +425,7 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).filter(
-                        (_, i) => i !== idx
+                        (_, i) => i !== originalIdx
                       )
                     )
                   }
@@ -436,7 +440,9 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).map((ev, i) =>
-                        i === idx ? { ...ev, title: e.target.value } : ev
+                        i === originalIdx
+                          ? { ...ev, title: e.target.value }
+                          : ev
                       )
                     )
                   }
@@ -449,7 +455,9 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).map((ev, i) =>
-                        i === idx ? { ...ev, description: e.target.value } : ev
+                        i === originalIdx
+                          ? { ...ev, description: e.target.value }
+                          : ev
                       )
                     )
                   }
@@ -460,7 +468,7 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).map((ev, i) =>
-                        i === idx ? { ...ev, date: date } : ev
+                        i === originalIdx ? { ...ev, date: date } : ev
                       )
                     )
                   }
@@ -475,7 +483,9 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).map((ev, i) =>
-                        i === idx ? { ...ev, location: e.target.value } : ev
+                        i === originalIdx
+                          ? { ...ev, location: e.target.value }
+                          : ev
                       )
                     )
                   }
@@ -486,12 +496,12 @@ export default function AdminPage() {
                     handleHomeChange(
                       "nextEvents",
                       (siteData.home?.nextEvents || []).map((ev, i) =>
-                        i === idx ? { ...ev, image: url } : ev
+                        i === originalIdx ? { ...ev, image: url } : ev
                       )
                     )
                   }
                   folder="nextEvents"
-                  fileName={`event-${idx}`}
+                  fileName={`event-${originalIdx}`}
                 />
               </div>
             ))}
@@ -771,7 +781,7 @@ export default function AdminPage() {
       {/* Save Button */}
       <div className="flex items-center justify-end w-full">
         <div
-          className="px-6 py-3 bg-yellow-500 text-black rounded-2xl text-lg text-center font-bold shadow-lg hover:bg-yellow-600 transition-colors border-2"
+          className="px-6 py-3 bg-yellow-500 text-black rounded-2xl text-lg text-center font-bold shadow-lg hover:bg-yellow-600 transition-colors border-2 cursor-pointer"
           style={{ minWidth: "120px" }}
           onClick={handleSiteUpdate}
         >

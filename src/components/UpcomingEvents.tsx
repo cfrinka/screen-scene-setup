@@ -24,7 +24,19 @@ const UpcomingEvents = () => {
 
   useEffect(() => {
     if (siteData?.home?.nextEvents) {
-      setEvents(siteData.home.nextEvents);
+      // Sort events from closest to furthest away
+      const sortedEvents = [...siteData.home.nextEvents].sort((a, b) => {
+        const parse = (str: string) => {
+          if (!str || str.trim() === "") return new Date(9999, 11, 31); // Put empty dates at the end
+          const [d, m, y] = str.split("-").map(Number);
+          if (isNaN(d) || isNaN(m) || isNaN(y)) return new Date(9999, 11, 31); // Invalid dates at the end
+          return new Date(y, m - 1, d);
+        };
+        const dateA = parse(a.date);
+        const dateB = parse(b.date);
+        return dateA.getTime() - dateB.getTime();
+      });
+      setEvents(sortedEvents);
     }
   }, [siteData]);
 
